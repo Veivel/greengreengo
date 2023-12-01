@@ -1,9 +1,13 @@
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SearchBar } from "@/components/ui/searchbar";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 export const SearchModule = () => {
-  const [query, setQuery] = useState<string>("aaaaa");
+  const router = useRouter()
+  const [query, setQuery] = useState<string>("");
 
   const handleQueryChange = (e: any) => {
     setQuery(e.target.value)
@@ -12,6 +16,7 @@ export const SearchModule = () => {
 
   const handleQuerySubmit = (e: any) => {
     // TODO: redirect to results page
+    router.push(`/search?q=${query}`)
   }
 
   return (
@@ -29,14 +34,14 @@ export const SearchModule = () => {
             {/* idk how to rapetin */}
           </div>
         </div>
-        <Input 
+        <SearchBar 
           placeholder="Enter your query here..." 
           name="query"
           id="query"
           value={query}
           onChange={handleQueryChange}
-          className="mb-20"
         />
+        <Button onClick={handleQuerySubmit}>test</Button>
     </main>
   );
 };
