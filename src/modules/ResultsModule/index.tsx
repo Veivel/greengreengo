@@ -7,22 +7,24 @@ import { Results } from './interface';
 import axios from "axios"
 import { FaSpinner } from "react-icons/fa"
 import { CgSpinner } from "react-icons/cg"
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@radix-ui/react-hover-card"
+import { IoIosHelpCircleOutline } from "react-icons/io"
+import { Switch } from "@/components/ui/switch"
 
 export const ResultsModule = () => {
   const initialQuery = useSearchParams().get('q')
-  // const [query, setQuery] = useState<string>("");
+  const initialWithLetor = useSearchParams().get('with_letor')
   const router = useRouter()
   const [data, setData] = useState<Results | undefined>();
 
   useEffect(() => {
     if (!data && initialQuery) {
-      const prom = axios.get(`https://ir.veivelp.com/retrieve?query=${initialQuery}`)
+      const prom = axios.get(`https://ir.veivelp.com/retrieve?query=${initialQuery}&with_letor=${initialWithLetor}`)
       prom.then((res) => {
         setData(res.data)
-        console.log(String(res.data))
       })
     }
-  }, [initialQuery, data])
+  }, [initialQuery, data, initialWithLetor])
 
   return(
     <main className="p-24">
@@ -30,13 +32,16 @@ export const ResultsModule = () => {
         placeholder="Enter your query here..."
         defaultValue={initialQuery as string}
       />
-      { data?.results && 
-        <p className="text-sm mt-1 text-neutral-600">
-          Showing {data.results.length} results for: <b>{initialQuery}</b>
-        </p> 
-      }
+      <div className="flex flex-row justify-start text-sm mt-2">
+        { data?.results && 
+          <p className="text-neutral-600">
+            Showing {data.results.length} results for <b>{initialQuery}</b>
+            { initialWithLetor ? " with LETOR." : ""}
+          </p> 
+        }
+      </div>
 
-      <div className="flex flex-col gap-4 mt-4 align-middle items-center">
+      <div className="flex flex-col gap-4 align-middle items-center">
         { data ? <>
           { Boolean(data) && data.results.length > 0 ?
             <>
